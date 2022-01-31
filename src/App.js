@@ -110,7 +110,7 @@ function App() {
         </AppBar>
           <Toolbar />
           <Modal open={open} onClose={ handleClose } >
-            {noError ? <Grid item contianer xs={12} justifyContent='center' spacing={3} style={{ 
+            {!noError ? <Grid item contianer xs={12} justifyContent='center' spacing={3} style={{ 
                 position: 'absolute', 
                 top: '50%', left: '50%', 
                 transform: 'translate(-50%, -50%)', 
