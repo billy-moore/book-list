@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import axios from 'axios';
-import { Grid, TextField, Button, Container, AppBar, Toolbar, Modal } from '@material-ui/core'
+import { Grid, Container, Toolbar, Modal } from '@material-ui/core'
 
 import ListedBook from './Components/ListedBook'
 import SuggestedBooks from './Components/SuggestedBook'
 import ErrorMessage from './Components/ErrorMessage'
 import './App.css';
+
+import TopBar from './Components/TopBar'
 
 function App() {
   const [ noError, setNoError ] = useState(true)
@@ -81,47 +83,14 @@ function App() {
     <Container className='App' >
       <Grid container>
         
-        <AppBar>
-          <Toolbar >
-          <Grid container spacing={2} justifyContent='flex-end' >
-              <Grid item xs={5}>
-                <TextField 
-                    size='small'
-                    fullWidth
-                    variant='outlined'
-                    placeholder='ISBN'
-                    value={ currentBook }
-                    style={{ backgroundColor: 'white', borderRadius: '4px'}}
-                    onChange={ (e) => searchBook(e)}
-                  />
-              </Grid>
-
-            <Grid item >
-              <Button
-                size='large'
-                variant='contained'
-                color='primary'
-                onClick={ getBook }
-                disabled={!currentBook}
-              >
-                Search
-              </Button>
-            </Grid>
-
-            <Grid item >
-              <Button
-                size='large'
-                variant='contained'
-                color='secondary'
-                onClick={handlePrint}
-                >
-                  Export
-                </Button>
-            </Grid>
-
-          </Grid>
-          </Toolbar>
-        </AppBar>
+        <TopBar 
+          value={ currentBook }
+          changes={ (e) => searchBook(e) }
+          sdisable={ !currentBook }
+          exdisable= { bookList.length === 0 }
+          sClick={ getBook }
+          exClick={ handlePrint }
+        />
           <Toolbar />
           <Modal open={open} onClose={ () => setOpen(prev=> false) } >
                 <Grid item container xs={12} justifyContent='center' spacing={3} style={{ 
