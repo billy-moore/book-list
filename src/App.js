@@ -9,12 +9,14 @@ import ErrorMessage from './Components/ErrorMessage'
 import './App.css';
 
 import TopBar from './Components/TopBar'
+import MenuDrawer from './Components/MenuDrawer'
 
 function App() {
   const [ noError, setNoError ] = useState(true)
   const [ bookList, setBookList ] = useState([])
   const [ suggestedItems, setSuggestedItems ] = useState([])
   const [ currentBook, setCurrentBook ] = useState('')
+  const [ drawerOpen, setDrawerOpen ] = useState( true )
   const [open, setOpen] = useState(false)
   const componentRef = useRef()
 
@@ -74,6 +76,11 @@ function App() {
     setOpen(prev => false)
   }
 
+  const drawerToggle = () => {
+    setDrawerOpen(prev => !prev)
+    console.log( drawerOpen )
+  }
+
   //  0802412858     078141251X   0399592555  
 
   const suggestedBook = suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={book.volumeInfo.imageLinks.thumbnail || null } clicked={(e) => selectItem(book)} />)
@@ -90,8 +97,12 @@ function App() {
           exdisable= { bookList.length === 0 }
           sClick={ getBook }
           exClick={ handlePrint }
+          menuToggle={ drawerToggle }
         />
           <Toolbar />
+          <MenuDrawer 
+            open={ drawerOpen }
+          />
           <Modal open={open} onClose={ () => setOpen(prev=> false) } >
                 <Grid item container xs={12} justifyContent='center' spacing={3} style={{ 
                 position: 'absolute', 
