@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import axios from 'axios';
-import { Grid, Container, Toolbar, Modal } from '@material-ui/core'
+import { Grid, Container, Toolbar, Modal, Typography } from '@material-ui/core'
 
 import ListedBook from './Components/ListedBook'
 import SuggestedBooks from './Components/SuggestedBook'
@@ -19,6 +19,9 @@ function App() {
   const [ drawerOpen, setDrawerOpen ] = useState( true )
   const [open, setOpen] = useState(false)
   const componentRef = useRef()
+  const [ pageTitle, setPageTitle ] = useState('')
+  const [ accentColor, setAccentColor ] = useState('transparent')
+  const [ textSize, setTextSize ] = useState('h6')
 
   const API = 'AIzaSyDgWDON5TvhCO6crYyYfNOt9dPBucPdiNA'
 
@@ -26,13 +29,10 @@ function App() {
     content: () => componentRef.current,
   });
 
-  // const getBook = async () => {
-  //     let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${currentBook}+isbn:${currentBook}&key=${API}`)
-  //     .then(data => setSuggestedItems(oldPull => [...data.data.items]))
-  //       .catch( handleErrors )
-  //   setOpen(fact => true)
-  //   setCurrentBook(prev=> '')
-  // }
+  const pageTitleHandler = (e) => {
+    e.preventDefault()
+    setPageTitle(prev => e.target.value )
+  }
 
   //  0802412858     078141251X   0399592555  
 
@@ -78,14 +78,29 @@ function App() {
 
   const drawerToggle = () => {
     setDrawerOpen(prev => !prev)
-    console.log( drawerOpen )
   }
 
+  const textChangeHandler = ( text ) => {
+    setTextSize(prev => text)
+    console.log( textSize )
+  }
+
+  const colorChangeHandler = ( color ) => {
+    setAccentColor(prev => color)
+    console.log( accentColor )
+  }
+
+  const colorResetHandler = () => {
+    setAccentColor(prev => 'transparent')
+    console.log(accentColor)
+  }
+  
   //  0802412858     078141251X   0399592555  
 
   const suggestedBook = suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={book.volumeInfo.imageLinks.thumbnail || null } clicked={(e) => selectItem(book)} />)
   const currentList = bookList && noError && bookList.map((books, index) => <ListedBook key={books.id+index} ind={index} thumbnail={books.volumeInfo.imageLinks.thumbnail || null } title={books.volumeInfo.title} clicked={(e) => deleteBook(books, index)} />)
   const errorMessage = <ErrorMessage clicked={ closeModal }/>
+
   return (
     <Container className='App' >
       <Grid container>
@@ -102,6 +117,14 @@ function App() {
           <Toolbar />
           <MenuDrawer 
             open={ drawerOpen }
+            titleUpdate={ (e) => pageTitleHandler(e) }
+            defaultText={ textSize }
+            textUpdate={text => textChangeHandler( text )}
+            drawerToggle={ drawerToggle }
+            currentTitle={ pageTitle }
+            accentColor={ accentColor }
+            changeColor={color => colorChangeHandler(color)}
+            colorReset={ colorResetHandler }
           />
           <Modal open={open} onClose={ () => setOpen(prev=> false) } >
                 <Grid item container xs={12} justifyContent='center' spacing={3} style={{ 
@@ -117,7 +140,12 @@ function App() {
             </Grid>
           </Modal>
           
-          <Grid item container xs={12} style={{padding: '3rem'}} ref={componentRef} justifyContent='center'>
+          <Grid item container xs={12} style={{padding: '3rem'}} ref={componentRef} justifyContent='flex-start'>
+            <Grid item xs={12} container style={{ display: 'flex', justifyContent: 'flex-start'}}>
+              <Typography variant={ textSize }>{pageTitle}</Typography>
+            </Grid>
+            <div style={{ height: '6px', width: '60%', backgroundColor: accentColor }}/>
+            <Grid item xs={12} style={{ paddingTop: '1rem'}}/>
             { currentList }
           </Grid>
       </Grid>
