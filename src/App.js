@@ -16,7 +16,7 @@ function App() {
   const [ bookList, setBookList ] = useState([])
   const [ suggestedItems, setSuggestedItems ] = useState([])
   const [ currentBook, setCurrentBook ] = useState('')
-  const [ drawerOpen, setDrawerOpen ] = useState( true )
+  const [ drawerOpen, setDrawerOpen ] = useState( false )
   const [open, setOpen] = useState(false)
   const componentRef = useRef()
   const [ pageTitle, setPageTitle ] = useState('')
