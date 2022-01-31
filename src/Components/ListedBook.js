@@ -8,7 +8,7 @@ const ListedBook = ( props ) => {
             <Grid item xs={3} ind={props.ind}>
                 <Tooltip title="Delete">
                     <ButtonBase className='capture'>
-                        <img src={props.thumbnail} alt={ props.title } style={{width: '150px'}} onClick={ props.clicked }/>
+                        <img src={props.thumbnail} alt={ props.title } onClick={ props.clicked }/>
                     </ButtonBase>
                 </Tooltip>
             </Grid>

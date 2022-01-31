@@ -3,7 +3,7 @@ import { Paper, Grid, Typography, Tooltip, ButtonBase } from '@material-ui/core'
 
 const SuggestedBook = ( props ) => {
     return (
-        <Grid item xs={2} >
+        <Grid item xs={3} >
             <Tooltip title="Select">
                     <ButtonBase>
                 <Paper sx={{ height: 140, width: 100 }} onClick={ props.clicked }>

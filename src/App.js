@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react'
 import { useReactToPrint } from 'react-to-print'
 import axios from 'axios';
-import { Grid, TextField, Button, Container, AppBar, Toolbar, Modal, Typography } from '@material-ui/core'
+import { Grid, TextField, Button, Container, AppBar, Toolbar, Modal } from '@material-ui/core'
 
 import ListedBook from './Components/ListedBook'
 import SuggestedBooks from './Components/SuggestedBook'
-
+import ErrorMessage from './Components/ErrorMessage'
 import './App.css';
 
 function App() {
@@ -18,27 +18,40 @@ function App() {
 
   const API = 'AIzaSyDgWDON5TvhCO6crYyYfNOt9dPBucPdiNA'
 
-  const handleClose = () => setOpen(false);
-
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
 
+  // const getBook = async () => {
+  //     let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${currentBook}+isbn:${currentBook}&key=${API}`)
+  //     .then(data => setSuggestedItems(oldPull => [...data.data.items]))
+  //       .catch( handleErrors )
+  //   setOpen(fact => true)
+  //   setCurrentBook(prev=> '')
+  // }
+
+  //  0802412858     078141251X   0399592555  
+
   const getBook = async () => {
-    try{
-      await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${currentBook}+isbn:${currentBook}&key=${API}`)
-      .then(data => setSuggestedItems(oldPull => [...data.data.items]))
-    } catch {
-      setNoError(true)
+      let res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${currentBook}+isbn:${currentBook}&key=${API}`)
+      let data = res.data.items
+      if (data === undefined ) {
+        setNoError(false)
+        setOpen(prev=> true)
+      } else if ( data.length > 0){
+        setSuggestedItems(prev => [...data])
+        setOpen(prev => true)
+        setCurrentBook(prev => '')
+      } else {
+      console.log( 'error!' )
     }
-    setOpen(fact => true)
-    setCurrentBook(prev=> '')
-  }
+}
 
   const selectItem = (item) => {
     setBookList(oldList => [...oldList, item])
     setSuggestedItems(list => [])
-    handleClose()
+    setOpen(prev => false)
+
   }
   const deleteBook = ( book, index ) => {
     bookList.splice(index, 1)
@@ -51,18 +64,19 @@ function App() {
     setCurrentBook( e.target.value )
   }
 
-  const closeModal = () => {
 
+  const closeModal = () => {
     setNoError(prevEr => true)
     setCurrentBook(prevBook => '')
-    handleClose()
+    setCurrentBook(prev => '')
+    setOpen(prev => false)
   }
 
   //  0802412858     078141251X   0399592555  
 
-  const suggestedBook = suggestedItems && noError && suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={book.volumeInfo.imageLinks.thumbnail || null } clicked={(e) => selectItem(book)} />)
+  const suggestedBook = suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={book.volumeInfo.imageLinks.thumbnail || null } clicked={(e) => selectItem(book)} />)
   const currentList = bookList && noError && bookList.map((books, index) => <ListedBook key={books.id+index} ind={index} thumbnail={books.volumeInfo.imageLinks.thumbnail || null } title={books.volumeInfo.title} clicked={(e) => deleteBook(books, index)} />)
-  
+  const errorMessage = <ErrorMessage clicked={ closeModal }/>
   return (
     <Container className='App' >
       <Grid container>
@@ -109,23 +123,7 @@ function App() {
           </Toolbar>
         </AppBar>
           <Toolbar />
-          <Modal open={open} onClose={ handleClose } >
-            {!noError ? <Grid item contianer xs={12} justifyContent='center' spacing={3} style={{ 
-                position: 'absolute', 
-                top: '50%', left: '50%', 
-                transform: 'translate(-50%, -50%)', 
-                // width: 400, 
-                bgcolor: 'background.paper', 
-                // border: '2px solid #000', 
-                boxShadow: 24, 
-                p: 4 }}>
-                  <Grid item xs={12}>
-                        <Typography variant='h6'>Something Went Wrong, Try Again</Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                  <Button color='secondary' onClick={closeModal} >Close</Button>
-                  </Grid>
-            </Grid> :
+          <Modal open={open} onClose={ () => setOpen(prev=> false) } >
                 <Grid item container xs={12} justifyContent='center' spacing={3} style={{ 
                 position: 'absolute', 
                 top: '50%', left: '50%', 
@@ -135,11 +133,11 @@ function App() {
                 // border: '2px solid #000', 
                 boxShadow: 24, 
                 p: 4 }} >
-              { suggestedBook }
-            </Grid>}
+              {noError ? suggestedBook : errorMessage}
+            </Grid>
           </Modal>
           
-          <Grid item container xs={12} style={{padding: '3rem'}} ref={componentRef}>
+          <Grid item container xs={12} style={{padding: '3rem'}} ref={componentRef} justifyContent='center'>
             { currentList }
           </Grid>
       </Grid>
