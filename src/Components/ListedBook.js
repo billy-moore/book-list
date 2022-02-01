@@ -9,7 +9,7 @@ const ListedBook = ( props ) => {
                     <Tooltip title="Delete">
                         <ButtonBase className='capture'>
                         <Grid item xs={12}>
-                            <img src={props.thumbnail} alt={ props.title } onClick={ props.clicked }/>
+                            <img src={props.thumbnail} alt={ props.title } onClick={ props.clicked } style={{maxWidth: '150px'}}/>
                         </Grid>
                         {/* <Grid item xs={12}>
                             <Typography>{props.title}</Typography>

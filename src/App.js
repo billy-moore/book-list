@@ -8,6 +8,7 @@ import SuggestedBooks from './Components/SuggestedBook'
 import ErrorMessage from './Components/ErrorMessage'
 import './App.css';
 
+import NoImage from './img/NoImage.png'
 import TopBar from './Components/TopBar'
 import MenuDrawer from './Components/MenuDrawer'
 
@@ -44,12 +45,12 @@ function App() {
         setOpen(prev=> true)
       } else if ( data.length > 0){
         setSuggestedItems(prev => [...data])
-        console.log(data)
         setOpen(prev => true)
         setCurrentBook(prev => '')
       } else {
       console.log( 'error!' )
     }
+    
 }
 
   const selectItem = (item) => {
@@ -66,7 +67,7 @@ function App() {
 
   const searchBook = (e) => {
     e.preventDefault()
-    setCurrentBook( e.target.value )
+    setCurrentBook( e.target.value.trim() )
   }
 
 
@@ -98,8 +99,9 @@ function App() {
   
   //  0802412858     078141251X   0399592555  
 
-  const suggestedBook = suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={book.volumeInfo.imageLinks.thumbnail || null } clicked={(e) => selectItem(book)} />)
-  const currentList = bookList && noError && bookList.map((books, index) => <ListedBook key={books.id+index} ind={index} thumbnail={books.volumeInfo.imageLinks.thumbnail || null } title={books.volumeInfo.title} date={books.volumeInfo.publishedDate} authors={books.volumeInfo.authors} clicked={(e) => deleteBook(books, index)} />)
+
+  const suggestedBook = suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={ book?.volumeInfo?.imageLinks?.thumbnail && book.volumeInfo.imageLinks.thumbnail || NoImage } clicked={(e) => selectItem(book)} />)
+  const currentList = bookList && noError && bookList.map((books, index) => <ListedBook key={books.id+index} ind={index} thumbnail={books?.volumeInfo?.imageLinks?.thumbnail && books.volumeInfo.imageLinks.thumbnail || NoImage } title={books.volumeInfo.title} date={books.volumeInfo.publishedDate} authors={books.volumeInfo.authors} clicked={(e) => deleteBook(books, index)} />)
   const errorMessage = <ErrorMessage clicked={ closeModal }/>
 
   return (
