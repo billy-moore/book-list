@@ -23,6 +23,9 @@ const TopBar = ( props ) => {
                     value={ props.value }
                     style={{ backgroundColor: 'white', borderRadius: '4px'}}
                     onChange={ props.changes }
+                    onKeyDown={(e) => {if(e.key === "Enter") {
+                        props.sClick()
+                    }}}
                     />
                 </Grid>
             <Grid item xs={3}>
