@@ -44,6 +44,7 @@ function App() {
         setOpen(prev=> true)
       } else if ( data.length > 0){
         setSuggestedItems(prev => [...data])
+        console.log(data)
         setOpen(prev => true)
         setCurrentBook(prev => '')
       } else {
@@ -98,7 +99,7 @@ function App() {
   //  0802412858     078141251X   0399592555  
 
   const suggestedBook = suggestedItems.map((book, index) => <SuggestedBooks key={ book.id+index } title={ book.volumeInfo.title } author={book.volumeInfo.authors} thumbnail={book.volumeInfo.imageLinks.thumbnail || null } clicked={(e) => selectItem(book)} />)
-  const currentList = bookList && noError && bookList.map((books, index) => <ListedBook key={books.id+index} ind={index} thumbnail={books.volumeInfo.imageLinks.thumbnail || null } title={books.volumeInfo.title} clicked={(e) => deleteBook(books, index)} />)
+  const currentList = bookList && noError && bookList.map((books, index) => <ListedBook key={books.id+index} ind={index} thumbnail={books.volumeInfo.imageLinks.thumbnail || null } title={books.volumeInfo.title} date={books.volumeInfo.publishedDate} authors={books.volumeInfo.authors} clicked={(e) => deleteBook(books, index)} />)
   const errorMessage = <ErrorMessage clicked={ closeModal }/>
 
   return (
@@ -145,7 +146,7 @@ function App() {
               <Typography variant={ textSize }>{pageTitle}</Typography>
             </Grid>
             <div style={{ height: '6px', width: '60%', backgroundColor: accentColor }}/>
-            <Grid item xs={12} style={{ paddingTop: '1rem'}}/>
+            <Grid item xs={12} style={{ paddingTop: '1rem', paddingBottom: '1rem'}}/>
             { currentList }
           </Grid>
       </Grid>
